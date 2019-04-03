@@ -1,0 +1,21 @@
+<div *ngIf="loggedIn()">
+  <ng-container  *ngFor="let playlist of playlists">
+    <mat-card *ngIf="valid(playlist)">
+      <img mat-card-avatar src="{{playlist.images[0].url}}" alt="{{playlist.name}}">
+      <mat-card-title>
+        {{playlist.name}}
+      </mat-card-title>
+      <mat-card-content>
+        <p>Created by: {{playlist.owner.display_name}}</p>
+        <p>{{playlist.tracks.total}} Songs</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="shuffle(playlist.id)">Shuffle Play</button>
+      </mat-card-actions>
+    </mat-card>
+    <br>
+  </ng-container>
+</div>
+<div *ngIf="!loggedIn()">
+  Please login to view this page.
+</div>

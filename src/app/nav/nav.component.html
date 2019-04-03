@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <button mat-button routerLink="">Home</button>
+  <button mat-button routerLink="/playlists">Playlists</button>
+  <span style="flex: 1 1 auto"></span>
+  <a *ngIf="!this.api.authenticated()" href="http://localhost:3000/login" mat-button>Login</a>
+  <button *ngIf="this.api.authenticated()" mat-button>Welcome {{this.api.userName}}</button>
+  <img *ngIf="this.api.authenticated()" style="border-radius: 50%; width: 40px" src="{{this.api.userImageLink}}">
+  <button *ngIf="this.api.authenticated()" mat-button (click)="onClick()">Logout</button>
+</mat-toolbar>
