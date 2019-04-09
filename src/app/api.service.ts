@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  
   
   userId;
   userName;
@@ -16,7 +17,7 @@ export class ApiService {
 
   setUserId() {
     this.http.get<any>('https://api.spotify.com/v1/me').subscribe((res) => {
-      console.log(res);
+      
       let user = {
         userId: res.id,
         userName: res.display_name,
@@ -42,6 +43,11 @@ export class ApiService {
     return this.http.get<any>('https://api.spotify.com/v1/me/playlists');
   }
 
+  getTracks(id: string, offset) {
+    let params = new HttpParams().set('offset', offset)
+    return this.http.get<any>('https://api.spotify.com/v1/playlists/' + id + '/tracks', {params: params});
+  }
+
   createPlaylist(name : string) {
     return this.http.post('https://api.spotify.com/vl/users/' + this.userId + '/playlists', {
       name: name,
@@ -49,6 +55,10 @@ export class ApiService {
       collaborative: false,
       description: 'Randomised version of ' + name
     });
+  }
+
+  addSongToPlaylist(name : string) {
+
   }
 
   authenticated() {

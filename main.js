@@ -67,7 +67,7 @@ app.get('/callback', (req, res) => {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
-                res.redirect('http://localhost:3000/t/?' +
+                res.redirect('http://localhost:4200/t/?' +
                     querystring.stringify({
                         a: access_token,
                         r: refresh_token

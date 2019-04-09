@@ -24,36 +24,57 @@ export class PlaylistsComponent implements OnInit {
     return !!localStorage.getItem('access_token');
   }
 
-  shuffle(id : string) {
-    console.log(id);
-    
-    let tracks;
+  shuffle(id: string) {
+    let tracksCount;
 
-    this.playlists.array.forEach(playlist => {
-      if (playlist.id === id)
-      {
-        tracks = playlist.tracks;
+    this.playlists.forEach(playlist => {
+      if (playlist.id == id) {
+        tracksCount = playlist.tracks.total;
       }
     });
 
-    console.log(tracks[1] + tracks[10] + tracks[100]);
-    this.shuffleArray(tracks);
-    console.log(tracks[1] + tracks[10] + tracks[100]);
+    let i = 0;
+    this.recurRequest(tracksCount, id, 0, []);
 
-    this.api.createPlaylist('__Randomiser__' + id).subscribe((res) => {
-      console.log(res);
-      
+    // console.log(tracks[1] + '' + tracks[10] + '' + tracks[100]);
+    // this.shuffleArray(tracks);
+    // console.log(tracks[1] + '' + tracks[10] + '' + tracks[100]);
+
+    // this.api.createPlaylist('__Randomiser__' + id).subscribe((res) => {
+    //   console.log(res);
+    // });
+  }
+
+  callback(tracks) {
+    console.log(tracks[10].track.id);
+    this.shuffleArray(tracks);
+    console.log(tracks[10].track.id);
+  }
+
+  recurRequest(tracksCount, id, offset, output) {
+    this.api.getTracks(id, offset).subscribe((res) => {
+      output = output.concat(res.items);
+      if (tracksCount > 100) {
+        if (offset <= tracksCount - 100) {
+          return this.recurRequest(tracksCount, id, offset + 100, output);
+        }
+        else {
+          this.callback(output);
+        }
+      } else {
+        this.callback(output);
+      }
     });
   }
 
   shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
-}
+  }
 
-  valid(playlist : any) {
+  valid(playlist: any) {
     return !playlist.name.includes('__Randomiser__');
   }
 }
