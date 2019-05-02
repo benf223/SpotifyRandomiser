@@ -43,6 +43,10 @@ export class ApiService {
     return this.http.get<any>('https://api.spotify.com/v1/me/playlists');
   }
 
+  getPlaylist(id : string) {
+    return this.http.get<any>('https://api.spotify.com/v1/me/playlists/' + id);
+  }
+
   getTracks(id: string, offset) {
     let params = new HttpParams().set('offset', offset)
     return this.http.get<any>('https://api.spotify.com/v1/playlists/' + id + '/tracks', {params: params});
@@ -59,6 +63,11 @@ export class ApiService {
 
   addSongToPlaylist(name : string) {
 
+  }
+  
+  // Add one song then can add more with above
+  clearPlaylist(id) {
+    return this.http.put('https://api.spotify.com/v1/playlists/' + id + '/tracks', {uris: ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh']});
   }
 
   authenticated() {

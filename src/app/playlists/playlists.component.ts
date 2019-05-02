@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
+import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-playlists',
@@ -45,10 +47,23 @@ export class PlaylistsComponent implements OnInit {
     // });
   }
 
-  callback(tracks) {
+  callback(tracks, id) {
+    console.log(tracks[10]);
     console.log(tracks[10].track.id);
     this.shuffleArray(tracks);
     console.log(tracks[10].track.id);
+
+    this.api.getPlaylist('__Randomiser__' + id).pipe(
+      catchError((err) => {
+        if (err.status === 404) {
+          this.api.createPlaylist('__Randomiser__' + id);
+        }
+
+        return new Observable();
+      })
+    ).subscribe((res) => {
+      // PUT songs 100 at a time
+    });
   }
 
   recurRequest(tracksCount, id, offset, output) {
@@ -59,10 +74,10 @@ export class PlaylistsComponent implements OnInit {
           return this.recurRequest(tracksCount, id, offset + 100, output);
         }
         else {
-          this.callback(output);
+          this.callback(output, id);
         }
       } else {
-        this.callback(output);
+        this.callback(output, id);
       }
     });
   }
@@ -76,5 +91,13 @@ export class PlaylistsComponent implements OnInit {
 
   valid(playlist: any) {
     return !playlist.name.includes('__Randomiser__');
+  }
+
+  test() {
+    //uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh
+    //id 5sKNMuF0yKXqijgbO9dkyO
+    this.api.clearPlaylist('5sKNMuF0yKXqijgbO9dkyO').subscribe(res => {
+      console.log(res);
+    })
   }
 }
